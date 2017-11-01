@@ -1,7 +1,8 @@
 class Circuit(object):
     def __init__(self, circuitWeight, col):
-        self.points = []
-        self.pointsWithTheta = []
+        self.points = [] #[0] - x | [1] - y
+        self.pointsWithTheta = [] #[0] - x | [1] - y | [2] - theta
+        self.walls = []
         self.circuitWeight = circuitWeight
         self.col = col
         
@@ -39,7 +40,20 @@ class Circuit(object):
                 else:
                     theta = 0
                 self.pointsWithTheta.append(self.points[i]+[theta])
-        #print self.pointsWithTheta        
+        #print self.pointsWithTheta
+        self.getWalls()
+        
+    def getWalls(self):
+        for p in self.pointsWithTheta:
+            newTheta1 = p[2]+radians(90)
+            newX1 = p[0]+self.circuitWeight/2*cos(newTheta1)
+            newY1 = p[1]+self.circuitWeight/2*sin(newTheta1)
+            
+            newTheta2 = p[2]+radians(270)
+            newX2 = p[0]+self.circuitWeight/2*cos(newTheta2)
+            newY2 = p[1]+self.circuitWeight/2*sin(newTheta2)
+            #print "theta1 = " + str(degrees(p[2])) + " newTheta1 = " + str(degrees(newTheta1)) + " newTheta2 = " + str(degrees(newTheta2))
+            self.walls.append([[float(newX1), float(newY1), float(newTheta1-radians(90))],[float(newX2), float(newY2), float(newTheta2-radians(270))]])
                             
     def display(self, circDraw):
         circDraw.beginDraw()
