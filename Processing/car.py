@@ -1,4 +1,5 @@
 from sensors import Sensors
+from controlDistWall import ControlDistWall
 
 class Car(object):
     def __init__(self,x = 0,y = 0, theta = 0):
@@ -11,6 +12,10 @@ class Car(object):
         self.distRight = 0
         self.distLeft = 0
         self.sensors = Sensors()
+        self.control = False
+        
+    def initControl(self, KpAng, KpLin, circuitWeight):
+        self.control = ControlDistWall(KpAng, KpLin, circuitWeight)
         
     def sense(self, wallsPoints, maxDist):
         retPoints = []
@@ -30,6 +35,9 @@ class Car(object):
         self.x = self.x + velLin*cos(self.theta)
         self.y = self.y + velLin*sin(self.theta)
         #print "x = "+str(self.x)+" y = "+str(self.y)+" theta = "+ str(self.theta) +" velLin = "+str(velLin)+" velAng = "+str(velAng)
+        
+    def controlCar(self):
+        self.move(self.control.controlLinVel(self.distFront), self.control.controlAngVel(self.distRight, self.distLeft))
         
     def display(self):
         stroke(255,0,0)
